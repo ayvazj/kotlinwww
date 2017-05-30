@@ -1,7 +1,6 @@
 package main
 
 import jQuery
-import org.w3c.dom.HTMLInputElement
 import kotlin.browser.document
 import kotlin.browser.window
 

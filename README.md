@@ -1,4 +1,4 @@
-# A working example of Javascript with Kotlib
+# A working example of Javascript with Kotlin
 
 ## Building the project
 
