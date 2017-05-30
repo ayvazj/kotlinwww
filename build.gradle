@@ -1,0 +1,58 @@
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+buildscript {
+    ext.kotlin_version = "1.1.2-2"
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+apply plugin: 'kotlin2js'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-js:$kotlin_version"
+}
+
+compileKotlin2Js {
+    kotlinOptions.outputFile = "${projectDir}/dist/js/index.js"
+    kotlinOptions.moduleKind = "plain"
+    kotlinOptions.sourceMap = true
+}
+
+// copy kotlin.js into the output
+build.doLast {
+    configurations.compile.each { File file ->
+        copy {
+            includeEmptyDirs = false
+
+            from zipTree(file.absolutePath)
+            into "${projectDir}/dist/js/"
+            include { fileTreeElement ->
+                def path = fileTreeElement.path
+                path.endsWith(".js") && (path.startsWith("META-INF/resources/") || !path.startsWith("META-INF/"))
+            }
+        }
+    }
+
+    fileTree(dir: "${projectDir}", include: '*.html').each { File file ->
+        copy {
+            from "${file}"
+            into "${projectDir}/dist/"
+        }
+    }
+
+    fileTree(dir: "${projectDir}/css", include: '*').each { File file ->
+        copy {
+            from "${file}"
+            into "${projectDir}/dist/css/"
+        }
+    }
+}
